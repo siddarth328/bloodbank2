@@ -1,4 +1,5 @@
 **Blood Bank Management System**
+
 Overview
 This project is a web-based Blood Bank Management System built with PHP and MySQL. It helps users, hospitals, and administrators manage blood donations, requests, inventories, and notifications efficiently.
 
@@ -11,16 +12,19 @@ Innovative Features & AI Integration
 This project incorporates cutting-edge technology and innovative features to revolutionize blood bank management:
 
 **🤖 AI-Powered Features**
+
 Smart Donor Matching: AI algorithms analyze donor profiles and medical history to suggest optimal donation schedules
 Predictive Inventory Management: Machine learning models predict blood demand based on historical data, seasonal trends, and local events
 Intelligent Route Optimization: AI-powered logistics system optimizes blood transport routes between facilities
 Automated Emergency Response: AI detects critical blood shortages and automatically notifies eligible donors in the area
 **🚀 Advanced Technologies**
+
 Real-time GPS Tracking: Live tracking of blood transport vehicles for enhanced security and efficiency
 Blockchain Integration: Secure, tamper-proof records of all blood donations and transfers
 IoT Sensors: Smart monitoring of blood storage conditions (temperature, humidity, etc.)
 Mobile App Integration: Cross-platform mobile applications for donors and healthcare workers
 **💡 Innovative Solutions**
+
 Gamification System: Donors earn badges, achievements, and rewards to encourage regular donations
 Social Network Integration: Connect donors with similar blood types and locations
 Emergency Alert System: Instant notifications to nearby donors during critical shortages
@@ -37,10 +41,12 @@ Reward Points: Donors earn points for each successful donation.
 Admin Dashboard: View and manage all blood requests and state inventories.
 Setup Instructions
 **1. Requirements**
+
 PHP 7.x or higher
 MySQL/MariaDB
 Web server (e.g., Apache, XAMPP, WAMP)
 **2. Installation**
+
 Clone or Download the Project
 
 Place the project folder in your web server's root directory (e.g., htdocs for XAMPP).
@@ -62,6 +68,7 @@ Run setup_location_tables.php or create_location_tables.php in your browser to s
 
 Use add_andhra_users.php and add_sample_notifications.php to populate demo users and notifications.
 **3. Running the Project**
+
 Open your browser and go to http://localhost/n/login.php (adjust path as needed).
 Register as a user, or log in as a hospital or admin (see demo credentials below).
 Demo Credentials
