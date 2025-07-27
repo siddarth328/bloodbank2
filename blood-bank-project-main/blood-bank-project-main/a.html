@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LifeLink Map</title>
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        .location-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+        .selected {
+            border-color: #007bff;
+            background-color: #e7f0ff;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Hospital & Blood Bank Locator</h2>
+
+<div id="loading">Loading map...</div>
+<div id="error" style="display: none; color: red;"></div>
+<div id="map"></div>
+<div id="locationsGrid"></div>
+
+<!-- Type filter -->
+<select id="typeFilter" onchange="filterLocations()">
+    <option value="all">All</option>
+    <option value="hospital">Hospitals</option>
+    <option value="blood_bank">Blood Banks</option>
+</select>
+
+<script>
+    let map;
+    let markers = [];
+    let locations = [];
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 20.5937, lng: 78.9629 },
+            zoom: 5
+        });
+
+        const geocoder = new google.maps.Geocoder();
+
+        // User location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLoc = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(userLoc);
+                    map.setZoom(10);
+                    new google.maps.Marker({
+                        map: map,
+                        position: userLoc,
+                        title: "You are here",
+                        icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                    });
+                },
+                () => {
+                    console.warn("Geolocation failed");
+                }
+            );
+        }
+
+        <?php
+        while ($hospital = $hospitals_result->fetch_assoc()) {
+            $fullAddress = $hospital['address'] . ', ' . $hospital['city'] . ', ' . $hospital['state'];
+            echo "geocoder.geocode({ address: '$fullAddress' }, (results, status) => {
+                if (status === 'OK') {
+                    const location = results[0].geometry.location;
+                    const marker = new google.maps.Marker({
+                        map: map,
+                        position: location,
+                        title: '{$hospital['name']}',
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                    });
+
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: '<b>{$hospital['name']}</b><br>{$hospital['address']}'
+                    });
+
+                    marker.addListener('click', () => infoWindow.open(map, marker));
+
+                    locations.push({
+                        id: '{$hospital['id']}',
+                        name: '{$hospital['name']}',
+                        address: '{$hospital['address']}',
+                        city: '{$hospital['city']}',
+                        state: '{$hospital['state']}',
+                        contact_number: '{$hospital['contact_number']}',
+                        email: '{$hospital['email']}',
+                        type: 'hospital',
+                        lat: location.lat(),
+                        lng: location.lng()
+                    });
+                    markers.push(marker);
+                    filterLocations();
+                }
+            });\n";
+        }
+
+        while ($blood_bank = $blood_banks_result->fetch_assoc()) {
+            $fullAddress = $blood_bank['address'] . ', ' . $blood_bank['city'] . ', ' . $blood_bank['state'];
+            echo "geocoder.geocode({ address: '$fullAddress' }, (results, status) => {
+                if (status === 'OK') {
+                    const location = results[0].geometry.location;
+                    const marker = new google.maps.Marker({
+                        map: map,
+                        position: location,
+                        title: '{$blood_bank['name']}',
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                    });
+
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: '<b>{$blood_bank['name']}</b><br>{$blood_bank['address']}'
+                    });
+
+                    marker.addListener('click', () => infoWindow.open(map, marker));
+
+                    locations.push({
+                        id: '{$blood_bank['id']}',
+                        name: '{$blood_bank['name']}',
+                        address: '{$blood_bank['address']}',
+                        city: '{$blood_bank['city']}',
+                        state: '{$blood_bank['state']}',
+                        contact_number: '{$blood_bank['contact_number']}',
+                        email: '{$blood_bank['email']}',
+                        type: 'blood_bank',
+                        lat: location.lat(),
+                        lng: location.lng()
+                    });
+                    markers.push(marker);
+                    filterLocations();
+                }
+            });\n";
+        }
+        ?>
+        document.getElementById('loading').style.display = 'none';
+    }
+
+    function filterLocations() {
+        const typeFilter = document.getElementById('typeFilter').value;
+        const grid = document.getElementById('locationsGrid');
+        grid.innerHTML = '';
+
+        locations.forEach(location => {
+            if (typeFilter === 'all' || location.type === typeFilter) {
+                const card = document.createElement('div');
+                card.className = 'location-card';
+                card.innerHTML = `
+                    <h3>${location.name}</h3>
+                    <p>${location.address}, ${location.city}, ${location.state}</p>
+                    <p><strong>Contact:</strong> ${location.contact_number}</p>
+                    <p><strong>Email:</strong> ${location.email}</p>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location.address + ', ' + location.city + ', ' + location.state)}" target="_blank">Get Directions</a>
+                `;
+                card.onclick = () => {
+                    map.setCenter({ lat: location.lat, lng: location.lng });
+                    map.setZoom(15);
+                };
+                grid.appendChild(card);
+            }
+        });
+    }
+
+    function gm_authFailure() {
+        document.getElementById('loading').style.display = 'none';
+        const err = document.getElementById('error');
+        err.style.display = 'block';
+        err.innerText = 'Google Maps authentication failed. Please check your API key.';
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAUrXsYmqGKyhqHCjXykse87q9EL0Mjdk&callback=initMap&libraries=places" async defer></script>
+
+</body>
+</html>
