@@ -40,11 +40,13 @@ Notifications: Users receive notifications for donation requests, reminders, and
 Reward Points: Donors earn points for each successful donation.
 Admin Dashboard: View and manage all blood requests and state inventories.
 Setup Instructions
+
 **1. Requirements**
 
 PHP 7.x or higher
 MySQL/MariaDB
 Web server (e.g., Apache, XAMPP, WAMP)
+
 **2. Installation**
 
 Clone or Download the Project
@@ -67,6 +69,7 @@ Run setup_location_tables.php or create_location_tables.php in your browser to s
 (Optional) Add Sample Data
 
 Use add_andhra_users.php and add_sample_notifications.php to populate demo users and notifications.
+
 **3. Running the Project**
 
 Open your browser and go to http://localhost/n/login.php (adjust path as needed).
